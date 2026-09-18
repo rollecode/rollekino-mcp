@@ -190,6 +190,23 @@ def get_connection_status() -> str:
         return _err(e)
 
 
+@mcp.tool(annotations=_READ)
+def lookup_tmdb(query: str) -> str:
+    """Search TMDB for a film, to get the tmdb_id that create_film enriches from.
+
+    This goes through the site, which holds the TMDB key, so no key is needed
+    here. Needs an application password.
+
+    Args:
+        query: Film title to search for.
+    """
+    try:
+        return _ok({"results": call("GET", f"{API}/lookup", query={"query": query})
+                    .get("results", [])})
+    except Exception as e:
+        return _err(e)
+
+
 @mcp.tool(annotations=_WRITE)
 def set_rating(id: int, rating: float) -> str:
     """Set Rolle's own rating for a film, out of 10.
@@ -243,6 +260,7 @@ def write_review(
 @mcp.tool(annotations=_WRITE)
 def create_film(
     title: str,
+    tmdb_id: int | None = None,
     content: str = "",
     rating: float | None = None,
     year: str | None = None,
@@ -250,14 +268,15 @@ def create_film(
     plot: str | None = None,
     status: str = "draft",
 ) -> str:
-    """Create a film entry.
+    """Create a film entry, optionally enriched from TMDB.
 
-    Metadata enrichment from TMDB happens in quick-review.php, so a film created
-    here starts with only what is given. Prefer finishing a draft the Trakt
-    importer already queued, which arrives with its metadata filled in.
+    With tmdb_id the site fetches plot, poster, backdrop, cast, crew, genres,
+    trailer, IMDb and Metascore and stores them exactly as quick-review.php
+    does, so the film renders identically. Use lookup_tmdb to find the id.
 
     Args:
         title: Film title.
+        tmdb_id: TMDB id, from lookup_tmdb. Strongly preferred.
         content: The review text.
         rating: Rolle's rating out of 10.
         year: Release year.
@@ -279,7 +298,8 @@ def create_film(
         result = call(
             "POST",
             f"{API}/films",
-            body={"title": title, "content": content, "status": status, **meta},
+            body={"title": title, "content": content, "status": status,
+                  "tmdb_id": tmdb_id, **meta},
         )
         return _ok(
             {"id": result.get("id"), "status": result.get("status"),

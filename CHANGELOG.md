@@ -4,3 +4,4 @@
 * Filter by year, genre, director, actor and rating
 * Archive-wide stats in one call
 * Writes go through rollekino/v1, not core REST
+* TMDB lookup and enrichment on create
