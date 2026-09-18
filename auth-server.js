@@ -17,6 +17,8 @@ const APP = process.env.APP_SLUG || 'mcp';
 const APP_NAME = process.env.APP_NAME || APP;
 const APP_LOGO = process.env.APP_LOGO || '/icon.png';
 const APP_LOGO_DARK = process.env.APP_LOGO_DARK || '';
+const APP_ICON = /^https?:\/\//.test(APP_LOGO) ? APP_LOGO : '/icon.png';
+const APP_FAVICON = /^https?:\/\//.test(APP_LOGO) ? APP_LOGO : '/favicon.ico';
 const APP_LOGO_WIDTH = process.env.APP_LOGO_WIDTH || '40px';
 // A wordmark already says the name, so the heading would repeat it.
 const APP_WORDMARK = process.env.APP_WORDMARK === '1';
@@ -269,9 +271,9 @@ function loginPage({ params, error }) {
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${escapeHtml(APP_NAME)} MCP</title>
-<link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="icon" href="/icon.png" type="image/png">
-<link rel="apple-touch-icon" href="/icon.png">
+<link rel="icon" href="${APP_FAVICON}" sizes="any">
+<link rel="icon" href="${APP_ICON}" type="image/png">
+<link rel="apple-touch-icon" href="${APP_ICON}">
 <style>
   /* ${escapeHtml(APP_NAME)}'s own palette. */
   :root{color-scheme:light dark;--fg:${APP_THEME.fg};--muted:${APP_THEME.muted};
@@ -659,9 +661,9 @@ app.get('/', (_req, res) => {
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${escapeHtml(APP_NAME)} MCP</title>
 <meta name="description" content="MCP server for a Cronometer food diary.">
-<link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="icon" href="/icon.png" type="image/png">
-<link rel="apple-touch-icon" href="/icon.png">
+<link rel="icon" href="${APP_FAVICON}" sizes="any">
+<link rel="icon" href="${APP_ICON}" type="image/png">
+<link rel="apple-touch-icon" href="${APP_ICON}">
 <style>
   :root{color-scheme:light dark;--fg:${APP_THEME.fg};--muted:${APP_THEME.muted};--bg:${APP_THEME.bg}}
   @media (prefers-color-scheme:dark){
