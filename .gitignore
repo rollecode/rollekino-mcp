@@ -1,0 +1,9 @@
+.venv/
+.env
+__pycache__/
+*.egg-info/
+uv.lock
+node_modules/
+rollekino-mcp.service
+rollekino-mcp-auth.service
+rollekino-mcp.conf
