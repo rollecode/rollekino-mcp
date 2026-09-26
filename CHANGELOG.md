@@ -1,3 +1,11 @@
+### 1.1.0: 2026-09-26
+
+* Set the watch date on create and update
+* Add find_film and update_film
+* Return the existing film instead of duplicating
+* Whole-number 1-10 rating, validated
+* Show the site's validation messages
+
 ### 1.0.1: 2026-09-19
 
 * Report its own name, not Cronometer's

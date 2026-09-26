@@ -52,15 +52,24 @@ mcp = FastMCP(
     website_url=_ICON_BASE or None,
     instructions=(
         "Read and write rollekino.fi, Rolle's film archive: about 3400 reviewed "
-        "films, each with his own 1-10 rating alongside IMDb and Metascore. "
-        "This is the authoritative record of what he has watched and what he "
-        "thought of it. "
-        "Use search_films to find a film by title, get_film for one record with "
-        "its full review and credits, and list_films to filter by year, genre, "
-        "director, actor or rating. get_stats answers questions about the "
-        "archive as a whole. Ratings are his, out of 10; imdb_rating and "
-        "metascore are external and should never be quoted as his opinion. "
-        "Writing needs an application password."
+        "films. It is the authoritative record of what he has watched and what "
+        "he thought of it. "
+        "RATINGS: his own, whole numbers 1 to 10, 0 for not rated. That is the "
+        "archive's native scale: never convert from IMDb or Metascore, which "
+        "are external and are never his opinion. If he gives stars out of 5, "
+        "double them. "
+        "DATES: each review carries the day he watched the film, which Trakt "
+        "history records. Pass it as date, YYYY-MM-DD, never today's date by "
+        "default. "
+        "ADDING A FILM: lookup_tmdb for the id, then create_film with tmdb_id, "
+        "rating and date. The archive keeps one entry per film, so create_film "
+        "returns the existing entry instead of making a duplicate; update that "
+        "with update_film or write_review. find_film checks by IMDb id first. "
+        "The review text is his own: pass what he wrote, never compose one. "
+        "READING: search_films by title, get_film for one full record, "
+        "list_films to filter by year, genre, director, actor or rating, "
+        "get_stats for the archive as a whole, list_queue for drafts waiting "
+        "for a review. Writing needs an application password."
     ),
 )
 
@@ -120,6 +129,8 @@ def _err(e: Exception) -> str:
             )
         elif status == 404:
             msg = "No such film. Check the id, or search by title first."
+        elif status == 400:
+            msg = _message(e.response) or f"{TITLE} rejected the request."
         else:
             msg = f"{TITLE} API error (HTTP {status}): {_detail(e.response)}"
     elif isinstance(e, httpx.ConnectError):
@@ -130,6 +141,14 @@ def _err(e: Exception) -> str:
         msg = f"{type(e).__name__}: {e}"
 
     return json.dumps({"status": "error", "message": msg})
+
+
+def _message(response: httpx.Response) -> str | None:
+    """The human message WordPress puts in a WP_Error body."""
+    try:
+        return response.json().get("message")
+    except (ValueError, AttributeError):
+        return None
 
 
 def _detail(response: httpx.Response) -> str:
