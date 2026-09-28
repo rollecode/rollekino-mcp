@@ -1,3 +1,7 @@
+### 1.1.1: 2026-09-28
+
+* Keep idle sessions for 24 hours
+
 ### 1.1.0: 2026-09-26
 
 * Set the watch date on create and update
