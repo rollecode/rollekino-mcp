@@ -4,6 +4,9 @@ Read and write the film archive at [rollekino.fi](https://www.rollekino.fi): abo
 
 Runs on the same host as the site, served at `https://www.rollekino.fi/mcp` by nginx in front of the Python server on 8600 and its OAuth login on 8602. It is not WordPress and exposes only film tools.
 
+> [!WARNING]
+> Using this server with a paid AI service costs money. Tool definitions and results are billed as input tokens, and an agent can call tools repeatedly on its own. You are responsible for every charge, so set spending limits with your provider. The author accepts no liability for any costs. See [DISCLAIMER.md](DISCLAIMER.md).
+
 ## Tools
 
 Reading: `search_films`, `get_film`, `list_films`, `get_stats`, `list_terms`, `list_queue`, `get_connection_status`.
